@@ -75,7 +75,29 @@ const search = (req, res) => {
   });
 };
 
-const updateUser = (req, res) => {};
+const updateUser = (req, res) => {
+  let id = req.params.id;
+  let { name, contact_number, gender } = req.body;
+
+  let sql =
+    "update users set name = ?, contact_number = ?, gender = ? where id = ?";
+
+  let values = [name, contact_number, gender, id];
+
+  db.query(sql, values, (errors, results, fields) => {
+    if (errors) throw errors;
+    if (results) {
+      return res.status(201).send({
+        status: 201,
+        message: "Updated User",
+      });
+    }
+    return res.status(400).send({
+      status: 400,
+      message: 'Unable to update',
+    });
+  });
+};
 
 export default {
   fetchUsers,

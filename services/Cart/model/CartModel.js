@@ -36,8 +36,9 @@ const fetchSingleCart = (req, res) => {
 
 const updateCart = (req, res) => {
   let id = req.params.id;
+  let quantity = req.body;
   let sql = "update cart set quantity = ? where id = ?";
-  db.query(sql, id, (error, results, fields) => {
+  db.query(sql, [quantity, id], (error, results, fields) => {
     if (error) throw error;
     return res.status(201).send({
       status: 201,

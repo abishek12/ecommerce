@@ -82,17 +82,24 @@ const postCat = (req, res) => {
 const updateCat = (req, res) => {
   let images = req.files.images;
   let id = req.params.id;
-  let { title, description, user } = req.body;
+  let { title, description, user_id } = req.body;
   let slugs = slug(title);
-  let sql = "update categories set title  = ?, slug = ?, description = ?, useer_id = ? where id = ?";
+  let sql =
+    "update categories set title  = ?, slug = ?, description = ?, user_id = ? where id = ?";
   cloudinary.uploader.upload(images.tempFilePath, (error, results) => {
     if (error) throw error;
-    let value = [title, slugs, description, results["url"], user, id];
+    let value = [title, slugs, description, results["url"], user_id, id];
     db.query(sql, value, (error, results, fields) => {
       if (error) throw error;
-      return res.status(200).send({
-        status: 200,
-        message: "Update complete",
+      if (results) {
+        return res.status(201).send({
+          status: 201,
+          message: "Update complete",
+        });
+      }
+      return res.status(400).send({
+        status: 400,
+        message: "Failed to update",
       });
     });
   });
